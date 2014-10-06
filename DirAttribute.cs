@@ -30,16 +30,21 @@ namespace DirLink
             return bool.Parse((string) attribute);
         }
 
-        public static explicit operator Guid(DirAttribute attribute)
+        public static explicit operator byte[](DirAttribute attribute)
         {
             byte[] bytes = attribute._attribute
                 .GetValues(typeof (byte[]))
                 .Cast<byte[]>()
                 .FirstOrDefault();
 
-            if (bytes == null) return Guid.Empty;
+            return bytes;
+        }
 
-            return new Guid(bytes);
+        public static explicit operator Guid(DirAttribute attribute)
+        {
+            var bytes = (byte[]) attribute;
+
+            return bytes == null ? Guid.Empty : new Guid(bytes);
         }
 
         public static explicit operator DateTimeOffset(DirAttribute attribute)
