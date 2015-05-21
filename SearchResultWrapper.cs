@@ -27,7 +27,7 @@ namespace DirLink
                 return _entry.Attributes
                     .Cast<DictionaryEntry>()
                     .Select(x => (DirectoryAttribute) x.Value)
-                    .ToDictionary(x => x.Name, x => new DirAttribute(x));
+                    .ToDictionary(x => x.Name, x => new DirAttribute(x), StringComparer.OrdinalIgnoreCase);
             }
         }
 

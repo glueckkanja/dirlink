@@ -85,6 +85,99 @@ namespace DirLink
             return tcs.Task;
         }
 
+        private async Task<DirectoryResponse> SendRequest(DirectoryRequest request)
+        {
+            IAsyncResult ar = _connection.BeginSendRequest(request, default(PartialResultProcessing), null, null);
+            return await Task.Factory.FromAsync(ar, x => _connection.EndSendRequest(x));
+        }
+
+        public async Task<ResultCode> Add(string dn, string objectClass)
+        {
+            await EnsureBind();
+
+            try
+            {
+                var request = new AddRequest(dn, objectClass);
+                var response = (AddResponse) await SendRequest(request);
+
+                return response.ResultCode;
+            }
+            catch (DirectoryOperationException ex)
+            {
+                if (ex.Response != null)
+                {
+                    return ex.Response.ResultCode;
+                }
+
+                throw;
+            }
+        }
+
+        public async Task<ResultCode> Delete(string dn)
+        {
+            await EnsureBind();
+
+            try
+            {
+                var request = new DeleteRequest(dn);
+                var response = (DeleteResponse) await SendRequest(request);
+
+                return response.ResultCode;
+            }
+            catch (DirectoryOperationException ex)
+            {
+                if (ex.Response != null)
+                {
+                    return ex.Response.ResultCode;
+                }
+
+                throw;
+            }
+        }
+
+        public async Task<ResultCode> Modify(string dn, params DirectoryAttributeModification[] modifications)
+        {
+            await EnsureBind();
+
+            try
+            {
+                var request = new ModifyRequest(dn, modifications);
+                var response = (ModifyResponse) await SendRequest(request);
+
+                return response.ResultCode;
+            }
+            catch (DirectoryOperationException ex)
+            {
+                if (ex.Response != null)
+                {
+                    return ex.Response.ResultCode;
+                }
+
+                throw;
+            }
+        }
+
+        public async Task<ResultCode> Modify(string dn, IEnumerable<DirectoryAttributeModification> modifications)
+        {
+            return await Modify(dn, modifications.ToArray());
+        }
+
+        public async Task<ResultCode> ModifyDn(string dn, string newParentDn, string newObjectName)
+        {
+            await EnsureBind();
+
+            var request = new ModifyDNRequest(dn, newParentDn, newObjectName);
+            var response = (ModifyDNResponse) await SendRequest(request);
+
+            return response.ResultCode;
+        }
+
+        public async Task<ResultCode> SetPassword(string dn, string password)
+        {
+            await EnsureBind();
+            return await Modify(dn, Modification.Set("userPassword", password));
+        }
+
         /// <summary>
         ///     Asynchronously executes a <paramref name="request" />.
         /// </summary>
@@ -108,10 +201,7 @@ namespace DirLink
 
             while (true)
             {
-                IAsyncResult ar = _connection.BeginSendRequest(request, default(PartialResultProcessing), null, null);
-
-                SearchResponse response =
-                    await Task.Factory.FromAsync(ar, x => (SearchResponse) _connection.EndSendRequest(x));
+                var response = (SearchResponse) await SendRequest(request);
 
                 result.Add(response);
 
@@ -150,6 +240,17 @@ namespace DirLink
             }
 
             return await Search(new SearchRequest(startDn, filter, SearchScope.Subtree));
+        }
+
+        /// <summary>
+        ///     Asynchronously retrieves one directory object by its distinguished name. If the object isn't found, <c>null</c> is returned.
+        /// </summary>
+        /// <param name="distinguishedName">The DN to look for.</param>
+        /// <returns></returns>
+        public async Task<SearchResultWrapper> GetObjectByDn(string distinguishedName)
+        {
+            var results = await Search(new SearchRequest(distinguishedName, (string) null, SearchScope.Base));
+            return results.FirstOrDefault();
         }
 
         public async Task<RootDse> GetRootDse()
