@@ -52,6 +52,11 @@ namespace DirLink
             return DateTimeOffset.ParseExact((string) attribute, "yyyyMMddHHmmmss.fK", CultureInfo.InvariantCulture);
         }
 
+        public static explicit operator TimeSpan(DirAttribute attribute)
+        {
+            return TimeSpan.FromTicks((long) attribute);
+        }
+
         public static explicit operator string(DirAttribute attribute)
         {
             return GetStrings(attribute).FirstOrDefault();
