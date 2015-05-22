@@ -246,10 +246,17 @@ namespace DirLink
         ///     Asynchronously retrieves one directory object by its distinguished name. If the object isn't found, <c>null</c> is returned.
         /// </summary>
         /// <param name="distinguishedName">The DN to look for.</param>
-        /// <returns></returns>
-        public async Task<SearchResultWrapper> GetObjectByDn(string distinguishedName)
+        /// <param name="includeDeleted">Specify <c>true</c> to return the object even if it has been deleted.</param>
+        public async Task<SearchResultWrapper> GetObjectByDn(string distinguishedName, bool includeDeleted = false)
         {
-            var results = await Search(new SearchRequest(distinguishedName, (string) null, SearchScope.Base));
+            var sr = new SearchRequest(distinguishedName, (string) null, SearchScope.Base);
+            if (includeDeleted)
+            {
+                sr.Controls.Add(new ShowDeletedControl());
+            }
+
+            var results = await Search(sr);
+
             return results.FirstOrDefault();
         }
 
