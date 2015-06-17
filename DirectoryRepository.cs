@@ -142,6 +142,8 @@ namespace DirLink
             try
             {
                 var request = new ModifyRequest(dn, modifications);
+                request.Controls.Add(new ShowDeletedControl());
+
                 var response = (ModifyResponse) await SendRequest(request);
 
                 return response.ResultCode;
@@ -167,6 +169,8 @@ namespace DirLink
             await EnsureBind();
 
             var request = new ModifyDNRequest(dn, newParentDn, newObjectName);
+            request.Controls.Add(new ShowDeletedControl());
+
             var response = (ModifyDNResponse) await SendRequest(request);
 
             return response.ResultCode;
