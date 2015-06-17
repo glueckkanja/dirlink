@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.DirectoryServices.Protocols;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DirLink
 {
@@ -13,31 +9,65 @@ namespace DirLink
     /// </summary>
     public static class Modification
     {
+        /// <summary>
+        ///     Deletes all values for the specified attribute.
+        /// </summary>
         public static DirectoryAttributeModification Clear(string attributeName)
         {
             return new DirectoryAttributeModification { Name = attributeName, Operation = DirectoryAttributeOperation.Delete };
         }
 
+        /// <summary>
+        ///     Sets a single integer value for the specified attribute.
+        /// </summary>
+        /// <remarks>
+        ///     All existing values will be removed (if any).
+        /// </remarks>
         public static DirectoryAttributeModification Set(string attributeName, int value)
         {
             return Set(attributeName, value.ToString(CultureInfo.InvariantCulture));
         }
 
+        /// <summary>
+        ///     Sets a single long integer value for the specified attribute.
+        /// </summary>
+        /// <remarks>
+        ///     All existing values will be removed (if any).
+        /// </remarks>
         public static DirectoryAttributeModification Set(string attributeName, long value)
         {
             return Set(attributeName, value.ToString(CultureInfo.InvariantCulture));
         }
 
+        /// <summary>
+        ///     Sets a single boolean value for the specified attribute.
+        /// </summary>
+        /// <remarks>
+        ///     All existing values will be removed (if any).
+        /// </remarks>
         public static DirectoryAttributeModification Set(string attributeName, bool value)
         {
             return Set(attributeName, value ? "TRUE" : "FALSE");
         }
 
+        /// <summary>
+        ///     Sets a single GUID value for the specified attribute.
+        /// </summary>
+        /// <remarks>
+        ///     All existing values will be removed (if any).
+        /// </remarks>
         public static DirectoryAttributeModification Set(string attributeName, Guid value)
         {
             return Set(attributeName, value.ToByteArray());
         }
 
+        /// <summary>
+        ///     Sets a single date and time value for the specified attribute.
+        /// </summary>
+        /// <param name="asFileTime">Specify <c>true</c> to store the value as file time long integer instead of a real date and time.</param>
+        /// <remarks>
+        ///     All existing values will be removed (if any).
+        /// </remarks>
         public static DirectoryAttributeModification Set(string attributeName, DateTimeOffset value, bool asFileTime = false)
         {
             if (asFileTime)
@@ -50,6 +80,12 @@ namespace DirLink
             }
         }
 
+        /// <summary>
+        ///     Sets a single blob value for the specified attribute.
+        /// </summary>
+        /// <remarks>
+        ///     All existing values will be removed (if any).
+        /// </remarks>
         public static DirectoryAttributeModification Set(string attributeName, byte[] value)
         {
             var dam = new DirectoryAttributeModification { Name = attributeName, Operation = DirectoryAttributeOperation.Replace };
@@ -60,6 +96,12 @@ namespace DirLink
             return dam;
         }
 
+        /// <summary>
+        ///     Sets a single string value for the specified attribute.
+        /// </summary>
+        /// <remarks>
+        ///     All existing values will be removed (if any).
+        /// </remarks>
         public static DirectoryAttributeModification Set(string attributeName, string value)
         {
             var dam = new DirectoryAttributeModification { Name = attributeName, Operation = DirectoryAttributeOperation.Replace };
@@ -70,6 +112,12 @@ namespace DirLink
             return dam;
         }
 
+        /// <summary>
+        ///     Sets multiple string values for the specified attribute.
+        /// </summary>
+        /// <remarks>
+        ///     All existing values will be removed (if any).
+        /// </remarks>
         public static DirectoryAttributeModification Set(string attributeName, string[] value)
         {
             var dam = new DirectoryAttributeModification { Name = attributeName, Operation = DirectoryAttributeOperation.Replace };
@@ -84,6 +132,12 @@ namespace DirLink
             return dam;
         }
 
+        /// <summary>
+        ///     Adds a single string value for the specified attribute.
+        /// </summary>
+        /// <remarks>
+        ///     All existing values will be kept (if any).
+        /// </remarks>
         public static DirectoryAttributeModification Add(string attributeName, string value)
         {
             var dam = new DirectoryAttributeModification { Name = attributeName, Operation = DirectoryAttributeOperation.Add };
@@ -93,6 +147,12 @@ namespace DirLink
             return dam;
         }
 
+        /// <summary>
+        ///     Removes a single string value from the specified attribute.
+        /// </summary>
+        /// <remarks>
+        ///     All other existing values will be kept (if any).
+        /// </remarks>
         public static DirectoryAttributeModification Remove(string attributeName, string value)
         {
             var dam = new DirectoryAttributeModification { Name = attributeName, Operation = DirectoryAttributeOperation.Delete };
