@@ -1,3 +1,5 @@
-*.suo
-bin
-obj
+.vs/
+.vscode/
+bin/
+obj/
+project.lock.json
