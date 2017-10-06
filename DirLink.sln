@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DirLink", "DirLink.xproj", "{A9251CEF-F5D5-4617-A851-EEBD1C12125C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DirLink", "DirLink.csproj", "{A9251CEF-F5D5-4617-A851-EEBD1C12125C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +18,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0A6E0096-749B-4DE9-8F46-FB9693570D77}
 	EndGlobalSection
 EndGlobal
